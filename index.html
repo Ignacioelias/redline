@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Redline — The partner review, before the partner reads it</title>
+<meta name="description" content="Redline is the AI partner review for advisory decks and financial models. It catches the errors that used to surface on the overnight read-through — before anything reaches the client.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F5F2EC'/%3E%3Ctext x='4' y='24' font-family='Georgia' font-size='22' fill='%231A1614'%3ER%3C/text%3E%3Cline x1='3' y1='17' x2='23' y2='17' stroke='%23D6402C' stroke-width='2.5'/%3E%3C/svg%3E">
+<style>
+:root{
+  --paper:#F5F2EC; --paper-2:#EEE9DE; --card:#FBF9F4;
+  --ink:#1A1614; --ink-2:#5A5249; --ink-3:#8A8177;
+  --red:#D6402C; --red-deep:#A62D1E;
+  --amber:#C6892A; --slate:#5B6B76;
+  --navy:#15222B; --navy-2:#1D2F3A;
+  --line:rgba(26,22,20,.13); --line-2:rgba(26,22,20,.07);
+  --hi:#F5D6CF; --md:#F6E6C4; --lo:#DFE6EA;
+  --maxw:1140px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:17px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+::selection{background:var(--red);color:#fff}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;line-height:1.04;letter-spacing:-.015em}
+.mono{font-family:"IBM Plex Mono",monospace}
+
+/* ---- eyebrow ---- */
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--red);font-weight:500;display:inline-flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:22px;height:2px;background:var(--red);display:inline-block}
+
+/* ---- nav ---- */
+header{position:sticky;top:0;z-index:50;background:rgba(245,242,236,.82);
+  backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--line-2)}
+nav{display:flex;align-items:center;justify-content:space-between;height:68px}
+.brand{display:inline-flex;flex-direction:column;line-height:1;gap:3px}
+.brand b{font-family:"Fraunces",serif;font-weight:600;font-size:23px;letter-spacing:-.02em}
+.brand .rule{height:2.5px;background:var(--red);width:100%;transform-origin:left;animation:draw 1.1s cubic-bezier(.7,0,.2,1) .2s both}
+@keyframes draw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.navlinks{display:flex;gap:30px;align-items:center}
+.navlinks a{font-size:14.5px;color:var(--ink-2);transition:color .18s}
+.navlinks a:hover{color:var(--ink)}
+.btn{font-family:"IBM Plex Sans";font-weight:500;font-size:14.5px;
+  padding:10px 18px;border-radius:2px;border:1px solid var(--ink);
+  background:var(--ink);color:var(--paper);cursor:pointer;transition:all .18s;display:inline-block}
+.btn:hover{background:var(--red);border-color:var(--red)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:var(--paper)}
+.btn.red{background:var(--red);border-color:var(--red);color:#fff}
+.btn.red:hover{background:var(--red-deep);border-color:var(--red-deep)}
+.navlinks .btn{padding:9px 17px}
+.menutoggle{display:none;background:none;border:0;font-size:22px;cursor:pointer;color:var(--ink)}
+
+/* ---- hero ---- */
+.hero{padding:96px 0 74px;position:relative;overflow:hidden}
+.hero .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center}
+.hero h1{font-size:clamp(40px,6.2vw,74px);font-weight:600;margin:22px 0 0}
+.hero h1 .strike{position:relative;white-space:nowrap;color:var(--ink-3)}
+.hero h1 .strike::after{content:"";position:absolute;left:-2px;right:-2px;top:52%;height:3px;
+  background:var(--red);transform:scaleX(0);transform-origin:left;
+  animation:strike 1s cubic-bezier(.7,0,.2,1) 1.1s forwards}
+@keyframes strike{to{transform:scaleX(1)}}
+.hero h1 .fix{display:inline-block;color:var(--red);opacity:0;transform:translateY(6px);
+  animation:rise .7s cubic-bezier(.2,.7,.2,1) 1.9s forwards}
+@keyframes rise{to{opacity:1;transform:translateY(0)}}
+.hero .lede{margin-top:26px;font-size:20px;line-height:1.55;color:var(--ink-2);max-width:33ch}
+.hero .cta{margin-top:34px;display:flex;gap:14px;flex-wrap:wrap}
+.hero .fineprint{margin-top:20px;font-size:13.5px;color:var(--ink-3);font-family:"IBM Plex Mono";letter-spacing:.02em}
+
+/* markup card in hero */
+.markup{background:var(--card);border:1px solid var(--line);border-radius:4px;
+  box-shadow:0 1px 0 rgba(0,0,0,.03),0 30px 60px -40px rgba(26,22,20,.5);overflow:hidden}
+.markup .bar{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line-2);
+  font-family:"IBM Plex Mono";font-size:11.5px;letter-spacing:.04em;color:var(--ink-3)}
+.markup .dot{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.markup .body{padding:24px 22px 26px}
+.markup .slidelabel{font-family:"IBM Plex Mono";font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin-bottom:14px}
+.markup p{font-size:16.5px;line-height:1.72;color:var(--ink)}
+.markup .rl{position:relative;color:var(--ink)}
+.mk-strike{text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:2px;color:var(--ink-3)}
+.mk-ins{color:var(--red-deep);font-weight:500;background:var(--hi);padding:0 3px;border-radius:2px}
+.markup .flagrow{margin-top:20px;padding-top:18px;border-top:1px solid var(--line-2);display:flex;gap:10px;align-items:flex-start}
+.pill{font-family:"IBM Plex Mono";font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+  padding:3px 8px;border-radius:2px;font-weight:500;white-space:nowrap}
+.pill.hi{background:var(--hi);color:#7a1f12}
+.pill.md{background:var(--md);color:#7a541a}
+.pill.lo{background:var(--lo);color:#38505c}
+.pill.line{background:transparent;border:1px solid var(--line);color:var(--ink-2)}
+.flagrow .txt{font-size:13.5px;color:var(--ink-2);line-height:1.5}
+
+/* logo strip */
+.trust{border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2);padding:26px 0;margin-top:36px}
+.trust .wrap{display:flex;align-items:center;gap:30px;flex-wrap:wrap;justify-content:space-between}
+.trust .cap{font-family:"IBM Plex Mono";font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.trust .badges{display:flex;gap:28px;flex-wrap:wrap}
+.trust .badges span{font-size:13.5px;color:var(--ink-2);font-weight:500;letter-spacing:.02em}
+
+/* ---- generic section ---- */
+section{padding:88px 0}
+.sechead{max-width:60ch}
+.sechead h2{font-size:clamp(30px,4.2vw,46px);margin:16px 0 0}
+.sechead .sub{margin-top:18px;font-size:18px;color:var(--ink-2);line-height:1.6;max-width:52ch}
+
+/* statement */
+.statement{background:var(--paper-2)}
+.statement .big{font-family:"Fraunces";font-weight:500;font-size:clamp(26px,3.6vw,40px);
+  line-height:1.25;letter-spacing:-.01em;max-width:20ch}
+.statement .big em{font-style:normal;color:var(--red);position:relative}
+.statement .row{display:grid;grid-template-columns:1.3fr 1fr;gap:50px;align-items:end}
+.statement .aside{font-size:16px;color:var(--ink-2);line-height:1.65;border-left:2px solid var(--red);padding-left:20px}
+
+/* pillars */
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:52px;border-top:1px solid var(--line)}
+.pillar{padding:34px 30px 38px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);position:relative}
+.pillar:last-child{border-right:0}
+.pillar .n{font-family:"IBM Plex Mono";font-size:12px;color:var(--red);letter-spacing:.1em}
+.pillar h3{font-size:25px;margin:16px 0 12px;font-weight:600}
+.pillar p{font-size:15.5px;color:var(--ink-2);line-height:1.6}
+.pillar ul{list-style:none;margin-top:18px;display:flex;flex-direction:column;gap:9px}
+.pillar li{font-size:14px;color:var(--ink);padding-left:18px;position:relative;font-family:"IBM Plex Mono";letter-spacing:-.01em}
+.pillar li::before{content:"";position:absolute;left:0;top:9px;width:9px;height:2px;background:var(--red)}
+
+/* how it works */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;margin-top:52px;counter-reset:step}
+.step{position:relative;padding-top:26px;border-top:2px solid var(--ink)}
+.step .no{font-family:"Fraunces";font-weight:600;font-size:15px;position:absolute;top:-12px;background:var(--paper);
+  padding-right:10px;color:var(--red)}
+.step h3{font-size:19px;margin:6px 0 10px;font-weight:600}
+.step p{font-size:14.5px;color:var(--ink-2);line-height:1.55}
+
+/* ---- demo (dark) ---- */
+.demo{background:var(--navy);color:#EDE7DC}
+.demo .eyebrow{color:#E8907F}
+.demo .eyebrow::before{background:#E8907F}
+.demo .sechead h2{color:#F3EEE4}
+.demo .sechead .sub{color:#AEB9BE}
+.demoapp{margin-top:44px;background:var(--navy-2);border:1px solid rgba(255,255,255,.09);border-radius:6px;overflow:hidden;
+  box-shadow:0 40px 80px -50px rgba(0,0,0,.8)}
+.demobar{display:flex;align-items:center;gap:14px;padding:13px 18px;border-bottom:1px solid rgba(255,255,255,.08);
+  font-family:"IBM Plex Mono";font-size:12px;color:#8FA0A7;flex-wrap:wrap}
+.demobar .live{color:#7BC98A;display:inline-flex;align-items:center;gap:7px}
+.demobar .live::before{content:"";width:7px;height:7px;border-radius:50%;background:#7BC98A;box-shadow:0 0 0 0 rgba(123,201,138,.6);animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(123,201,138,.5)}70%{box-shadow:0 0 0 7px rgba(123,201,138,0)}100%{box-shadow:0 0 0 0 rgba(123,201,138,0)}}
+.demobar .counts{margin-left:auto;display:flex;gap:8px}
+.demogrid{display:grid;grid-template-columns:88px 1.05fr 1fr;min-height:520px}
+.rail{border-right:1px solid rgba(255,255,255,.08);padding:14px 10px;overflow-y:auto;max-height:600px}
+.thumb{border:1px solid rgba(255,255,255,.1);border-radius:3px;margin-bottom:10px;cursor:pointer;position:relative;
+  overflow:hidden;transition:border-color .15s;background:#fff}
+.thumb img{width:100%;display:block}
+.thumb.active{border-color:#E8907F;box-shadow:0 0 0 2px rgba(232,144,127,.4)}
+.thumb .badge{position:absolute;top:4px;right:4px;font-family:"IBM Plex Mono";font-size:10px;font-weight:600;
+  width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff}
+.thumb .snum{position:absolute;bottom:0;left:0;font-family:"IBM Plex Mono";font-size:9px;background:rgba(0,0,0,.6);color:#fff;padding:1px 5px}
+.badge.hi{background:var(--red)} .badge.md{background:var(--amber)} .badge.lo{background:var(--slate)}
+.stage{border-right:1px solid rgba(255,255,255,.08);padding:18px;display:flex;flex-direction:column}
+.stage .slideimg{border:1px solid rgba(255,255,255,.12);border-radius:3px;overflow:hidden;background:#fff;position:relative}
+.stage .slideimg img{width:100%;display:block}
+.stage .stitle{font-family:"IBM Plex Mono";font-size:11px;letter-spacing:.05em;color:#8FA0A7;margin-top:14px}
+.stage .stitle b{color:#EDE7DC;font-weight:500}
+.overlay{position:absolute;border:2px solid var(--red);border-radius:2px;pointer-events:none;transition:opacity .2s}
+.overlay.md{border-color:var(--amber)} .overlay.lo{border-color:var(--slate)}
+.findlist{padding:16px 16px 18px;overflow-y:auto;max-height:600px}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.chip{font-family:"IBM Plex Mono";font-size:11px;padding:4px 9px;border-radius:2px;border:1px solid rgba(255,255,255,.16);
+  color:#AEB9BE;cursor:pointer;background:transparent;transition:all .15s}
+.chip:hover{border-color:#E8907F;color:#EDE7DC}
+.chip.on{background:#E8907F;border-color:#E8907F;color:#231a18;font-weight:500}
+.fcard{border:1px solid rgba(255,255,255,.1);border-left:3px solid var(--red);border-radius:3px;
+  padding:13px 14px;margin-bottom:11px;background:rgba(255,255,255,.02)}
+.fcard.md{border-left-color:var(--amber)} .fcard.lo{border-left-color:var(--slate)}
+.fcard .top{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:9px}
+.tag{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:2px}
+.tag.cat{background:rgba(255,255,255,.08);color:#C9D2D6}
+.tag.sev-hi{background:var(--red);color:#fff} .tag.sev-md{background:var(--amber);color:#231a18} .tag.sev-lo{background:var(--slate);color:#fff}
+.tag.src{border:1px solid rgba(255,255,255,.2);color:#9fb0b6}
+.tag.act{background:rgba(232,144,127,.14);color:#E8907F}
+.fcard .issue{font-size:14px;color:#EDE7DC;line-height:1.5}
+.fcard .quote{font-family:"IBM Plex Mono";font-size:12px;color:#C9D2D6;background:rgba(0,0,0,.28);
+  padding:7px 10px;border-radius:2px;margin:9px 0;line-height:1.5;border-left:2px solid rgba(232,144,127,.5);word-break:break-word}
+.fcard .fix{font-size:13px;color:#AEB9BE;line-height:1.5}
+.fcard .fix b{color:#7BC98A;font-weight:500;font-family:"IBM Plex Mono";font-size:11px;letter-spacing:.03em;text-transform:uppercase}
+.fcard .vnote{font-size:12px;color:#8FA0A7;margin-top:8px;font-style:italic;line-height:1.45}
+.demofoot{padding:14px 18px;border-top:1px solid rgba(255,255,255,.08);font-family:"IBM Plex Mono";font-size:11.5px;color:#8FA0A7;display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+.demofoot .out{display:inline-flex;align-items:center;gap:7px;color:#C9D2D6}
+.demofoot .out::before{content:"↓";color:#E8907F}
+
+/* taxonomy */
+.tax{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:48px;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.taxcol{padding:24px 20px;border-right:1px solid var(--line)}
+.taxcol:last-child{border-right:0}
+.taxcol h4{font-family:"IBM Plex Mono";font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--red);margin-bottom:14px}
+.taxcol ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.taxcol li{font-size:13.5px;color:var(--ink-2);line-height:1.4}
+
+/* stats */
+.proof{background:var(--ink);color:var(--paper)}
+.proof .eyebrow{color:#E8907F}.proof .eyebrow::before{background:#E8907F}
+.proof h2{color:var(--paper);font-size:clamp(30px,4.2vw,46px);margin-top:16px}
+.proof .sub{color:#B7AFA4;margin-top:16px;font-size:17px;max-width:54ch}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:54px;border-top:1px solid rgba(255,255,255,.14)}
+.stat{padding:34px 26px 30px;border-right:1px solid rgba(255,255,255,.14)}
+.stat:last-child{border-right:0}
+.stat .num{font-family:"Fraunces";font-weight:600;font-size:clamp(46px,6vw,68px);line-height:1;color:var(--paper)}
+.stat .num small{font-size:.42em;color:#E8907F;font-weight:500}
+.stat .lbl{margin-top:14px;font-size:15px;color:var(--paper);font-weight:500}
+.stat .desc{margin-top:8px;font-size:13.5px;color:#948C81;line-height:1.5}
+.proof .srcline{margin-top:26px;font-family:"IBM Plex Mono";font-size:12px;color:#7d766c;letter-spacing:.03em}
+
+/* security */
+.secure .row{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+.seclist{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+.secitem{padding:22px 0;border-bottom:1px solid var(--line)}
+.secitem h4{font-size:18px;font-weight:600;font-family:"Fraunces";display:flex;align-items:baseline;gap:12px}
+.secitem h4 .m{font-family:"IBM Plex Mono";font-size:12px;color:var(--red)}
+.secitem p{font-size:14.5px;color:var(--ink-2);margin-top:7px;line-height:1.55;padding-left:34px}
+
+/* pricing / cta */
+.access{background:var(--paper-2)}
+.access .card{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:48px 44px;
+  display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;
+  box-shadow:0 30px 60px -50px rgba(26,22,20,.5)}
+.access h2{font-size:clamp(28px,3.6vw,40px)}
+.access p{margin-top:16px;font-size:16.5px;color:var(--ink-2);line-height:1.6}
+.access .form{display:flex;flex-direction:column;gap:12px}
+.access label{font-family:"IBM Plex Mono";font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.access input,.access select{font-family:"IBM Plex Sans";font-size:15px;padding:12px 14px;border:1px solid var(--line);
+  border-radius:3px;background:var(--paper);color:var(--ink);width:100%}
+.access input:focus,.access select:focus{outline:2px solid var(--red);outline-offset:-1px;border-color:var(--red)}
+.access .btn{margin-top:6px;text-align:center;padding:14px}
+.access .note{font-size:12.5px;color:var(--ink-3);margin-top:2px;line-height:1.5}
+
+/* footer */
+footer{background:var(--navy);color:#AEB9BE;padding:60px 0 40px}
+footer .grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px}
+footer .brand b{color:#F3EEE4}
+footer p{font-size:14px;line-height:1.6;margin-top:16px;max-width:32ch;color:#8FA0A7}
+footer h5{font-family:"IBM Plex Mono";font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#6f7d83;margin-bottom:14px}
+footer ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+footer a{font-size:14px;color:#C9D2D6}footer a:hover{color:#fff}
+footer .base{margin-top:44px;padding-top:22px;border-top:1px solid rgba(255,255,255,.1);
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-family:"IBM Plex Mono";font-size:12px;color:#6f7d83}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+
+@media (max-width:940px){
+  .hero .grid,.statement .row,.secure .row,.access .card{grid-template-columns:1fr}
+  .pillars,.steps,.tax,.statgrid{grid-template-columns:1fr}
+  .pillar,.taxcol{border-right:0}
+  .stat{border-right:0;border-bottom:1px solid rgba(255,255,255,.14)}
+  .demogrid{grid-template-columns:1fr}
+  .rail{display:flex;gap:10px;max-height:none;border-right:0;border-bottom:1px solid rgba(255,255,255,.08);overflow-x:auto}
+  .rail .thumb{min-width:78px}
+  .stage{border-right:0;border-bottom:1px solid rgba(255,255,255,.08)}
+  footer .grid{grid-template-columns:1fr}
+  .navlinks{display:none}
+  .menutoggle{display:block}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+  .hero h1 .strike::after{transform:scaleX(1)}.hero h1 .fix{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <a class="brand" href="#top" aria-label="Redline home">
+      <b>Redline</b><span class="rule"></span>
+    </a>
+    <div class="navlinks">
+      <a href="#product">Product</a>
+      <a href="#how">How it works</a>
+      <a href="#demo">Live review</a>
+      <a href="#security">Security</a>
+      <a href="#access" class="btn">Request access</a>
+    </div>
+    <button class="menutoggle" aria-label="Menu" onclick="document.querySelector('.navlinks').style.display='flex'">≡</button>
+  </nav>
+</header>
+
+<a id="top"></a>
+<section class="hero">
+  <div class="wrap grid">
+    <div>
+      <span class="eyebrow">AI partner review</span>
+      <h1>Nothing reaches<br>the client<br><span class="strike">unread</span> <span class="fix">unchecked.</span></h1>
+      <p class="lede">Redline reads every deck and every model the way a partner does on the overnight pass — and catches what breaks before the file leaves the firm.</p>
+      <div class="cta">
+        <a href="#access" class="btn red">Request access</a>
+        <a href="#demo" class="btn ghost">See a live review</a>
+      </div>
+      <p class="fineprint">Decks · Models · Deck-to-model reconciliation</p>
+    </div>
+    <div class="markup reveal">
+      <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp; Project Tower — slide 6</div>
+      <div class="body">
+        <div class="slidelabel">Action title</div>
+        <p class="rl">A trend of decreasing <span class="mk-strike">ARPU's</span> <span class="mk-ins">ARPUs</span> and <span class="mk-strike">stale</span> <span class="mk-ins">stagnant</span> volumes <span class="mk-strike">are</span> <span class="mk-ins">is</span> causing pressure on carrier revenues.</p>
+        <div class="flagrow">
+          <span class="pill hi">High</span>
+          <span class="pill line">Data</span>
+          <div class="txt">Chart title cites <b>ARCOM</b> — the French regulator. The Italian source is <b>AGCOM</b>. Flagged for the owner, not silently changed.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="trust">
+    <div class="wrap">
+      <span class="cap">Built for the standards of</span>
+      <div class="badges">
+        <span>Management consulting</span><span>Private equity</span><span>Investment banking</span><span>Corporate strategy</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- statement -->
+<section class="statement" id="product">
+  <div class="wrap">
+    <span class="eyebrow">The problem</span>
+    <div class="row" style="margin-top:22px">
+      <div class="big">The mistakes that used to surface on the overnight read-through, <em>caught before the partner ever opens the file.</em></div>
+      <div class="aside">A stale ticker. A total that doesn't tie. A chart that contradicts its own title. A number that reads €2.0bn on the slide and €1.87bn in the model. None of them are hard to fix. All of them are hard to find at 2am, on the fortieth read of the same deck.</div>
+    </div>
+  </div>
+</section>
+
+<!-- pillars -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">What Redline reviews</span>
+    <div class="sechead"><h2>Three reviews, one standard.</h2>
+      <p class="sub">Each runs an independent pass — deterministic checks first, then a reasoning model, then an adversarial verifier that tries to refute every finding before you ever see it.</p></div>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="n">01 — Decks</div>
+        <h3>Deck review</h3>
+        <p>Every slide read for the errors that embarrass a deal team in front of a client.</p>
+        <ul><li>Typos & grammar</li><li>Units & number format</li><li>Chart-vs-title mismatches</li><li>Action-title / storyline</li><li>Cross-slide consistency</li></ul>
+      </div>
+      <div class="pillar">
+        <div class="n">02 — Models</div>
+        <h3>Model review</h3>
+        <p>Every formula traced for the breaks that move a number the client relies on.</p>
+        <ul><li>#REF! & broken links</li><li>Dragged-wrong formulas</li><li>Hardcoded overrides</li><li>Sums that miss a row</li><li>Assumption red-flags</li></ul>
+      </div>
+      <div class="pillar">
+        <div class="n">03 — Both</div>
+        <h3>Reconciliation</h3>
+        <p>The deck and the model, checked against each other, figure by figure.</p>
+        <ul><li>Deck-to-model number ties</li><li>Scope-difference detection</li><li>Restated-figure catches</li><li>Stale-vs-current values</li><li>No false mismatches</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- how -->
+<section id="how" class="statement">
+  <div class="wrap">
+    <span class="eyebrow">How it works</span>
+    <div class="sechead"><h2>From file to sign-off in four steps.</h2>
+      <p class="sub">You stay in control the whole way. Redline proposes; a human accepts. Originals are never touched, and a number that doesn't tie is never quietly rewritten.</p></div>
+    <div class="steps">
+      <div class="step"><span class="no">01</span><h3>Hand it the file</h3><p>Drop a deck or a model. Redline works on a copy and reads it slide by slide, cell by cell.</p></div>
+      <div class="step"><span class="no">02</span><h3>Independent checks</h3><p>Deterministic rules, a reasoning pass, and an adversarial verifier that refutes weak findings before they reach you.</p></div>
+      <div class="step"><span class="no">03</span><h3>Review & accept</h3><p>Every finding is anchored to its slide or cell. Accept, edit, or reject. Mechanical fixes are pre-checked; judgement calls are flagged for the owner.</p></div>
+      <div class="step"><span class="no">04</span><h3>Ship the outputs</h3><p>A clean file with fixes applied, an annotated copy with the flags, and a findings register you can hand to the team.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO -->
+<section id="demo" class="demo">
+  <div class="wrap">
+    <span class="eyebrow">Live review</span>
+    <div class="sechead"><h2>A real review, on a sample deck.</h2>
+      <p class="sub">This is genuine Redline output on a fictional due-diligence deck — no client data. Pick a slide to see what it found, and how each finding is anchored back to the page.</p></div>
+    <div class="demoapp" id="demoapp">
+      <div class="demobar">
+        <span class="live">Review complete</span>
+        <span id="deckname">Project Tower — Commercial due diligence</span>
+        <span class="counts" id="counts"></span>
+      </div>
+      <div class="demogrid">
+        <div class="rail" id="rail"></div>
+        <div class="stage">
+          <div class="slideimg" id="slideimg"><img id="slideImgEl" alt="Selected slide"></div>
+          <div class="stitle" id="stitle"></div>
+        </div>
+        <div class="findlist">
+          <div class="filters" id="filters"></div>
+          <div id="cards"></div>
+        </div>
+      </div>
+      <div class="demofoot">
+        <span class="out">Clean deck</span><span class="out">Annotated deck</span><span class="out">Findings register (Excel)</span>
+        <span style="margin-left:auto">Originals never modified</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- taxonomy -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">The check taxonomy</span>
+    <div class="sechead"><h2>Every finding, one of five kinds.</h2>
+      <p class="sub">The same categories a reviewer uses by hand — so a finding lands where a partner expects it, tagged and ranked by how much it would cost in front of a client.</p></div>
+    <div class="tax">
+      <div class="taxcol"><h4>Typo & grammar</h4><ul><li>Spelling, agreement</li><li>Possessives (MNOs → MNOs')</li><li>Doubled / dropped words</li><li>Wrong-language fragments</li></ul></div>
+      <div class="taxcol"><h4>Units & format</h4><ul><li>European vs. English separators</li><li>Currency spacing</li><li>MHz / k / CAGR notation</li><li>Redundant approximations</li></ul></div>
+      <div class="taxcol"><h4>Data</h4><ul><li>Figures that don't reconcile</li><li>Chart-vs-title mismatch</li><li>Wrong source names</li><li>Placeholders left in</li></ul></div>
+      <div class="taxcol"><h4>Storyline</h4><ul><li>Weak action titles</li><li>Duplicate titles</li><li>Titles the chart contradicts</li><li>Horizontal-logic breaks</li></ul></div>
+      <div class="taxcol"><h4>Layout</h4><ul><li>Internal notes left on slide</li><li>WIP / draft badges</li><li>Off-canvas review chatter</li><li>Template placeholders</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- proof -->
+<section class="proof">
+  <div class="wrap">
+    <span class="eyebrow">Measured, not claimed</span>
+    <h2>Held to a benchmark.</h2>
+    <p class="sub">Redline is scored against decks and models seeded with known errors on every build. These are the numbers from that suite — not estimates.</p>
+    <div class="statgrid">
+      <div class="stat"><div class="num">32<small>/32</small></div><div class="lbl">Deck errors caught</div><div class="desc">Across all five categories on the seeded deck — typos, number mismatches, storyline, layout.</div></div>
+      <div class="stat"><div class="num">25<small>/26</small></div><div class="lbl">Model errors caught</div><div class="desc">Formula breaks, hardcodes, sign flips, assumption red-flags on the seeded workbook.</div></div>
+      <div class="stat"><div class="num">3<small>/3</small></div><div class="lbl">Deck-model mismatches</div><div class="desc">Every planted contradiction between the deck's figures and the model, flagged — never auto-corrected.</div></div>
+    </div>
+    <p class="srcline">Source / Redline verification suite, seeded-error benchmark. Each finding independently verified before it counts.</p>
+  </div>
+</section>
+
+<!-- security -->
+<section id="security" class="secure">
+  <div class="wrap">
+    <span class="eyebrow">Trust</span>
+    <div class="row">
+      <div class="sechead"><h2>Your work never leaves your control.</h2>
+        <p class="sub">Redline runs on your own footprint. It reads your files, proposes changes, and waits for a human to accept — nothing is published, and nothing is decided for you.</p>
+      </div>
+      <div class="seclist">
+        <div class="secitem"><h4><span class="m">01</span> Originals are never modified</h4><p>Every review works on a copy. Outputs are new files; the source you handed in is untouched.</p></div>
+        <div class="secitem"><h4><span class="m">02</span> Numbers are never invented</h4><p>A figure that doesn't tie is flagged for the owner with both values shown — Redline never guesses the reconciling number.</p></div>
+        <div class="secitem"><h4><span class="m">03</span> A human accepts every change</h4><p>Findings are proposals. Mechanical fixes are pre-checked; judgement calls are flagged. You decide before anything is applied.</p></div>
+        <div class="secitem"><h4><span class="m">04</span> Runs on your footprint</h4><p>Deployed inside the firm. Your decks and models stay where your other confidential work stays.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- access -->
+<section id="access" class="access">
+  <div class="wrap">
+    <div class="card">
+      <div>
+        <span class="eyebrow">Request access</span>
+        <h2>Access is granted firm by firm.</h2>
+        <p>A short conversation, a review on a deck you're working on right now, then a deployment shaped to how your team actually works. Tell us where to start.</p>
+      </div>
+      <form class="form" id="accessForm">
+        <div><label for="name">Name</label><input id="name" name="name" required></div>
+        <div><label for="firm">Firm</label><input id="firm" name="firm" required></div>
+        <div><label for="email">Work email</label><input id="email" name="email" type="email" required></div>
+        <div><label for="role">Role</label>
+          <select id="role" name="role">
+            <option>Partner / Managing Director</option>
+            <option>Principal / Director</option>
+            <option>Engagement Manager</option>
+            <option>Associate / Analyst</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <button class="btn red" type="submit">Request a review</button>
+        <p class="note">Opens your email client with the details filled in. No account, no upload required to start.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <a class="brand" href="#top"><b>Redline</b><span class="rule" style="animation:none"></span></a>
+        <p>The AI partner review for advisory decks and financial models. Nothing reaches the client unchecked.</p>
+      </div>
+      <div>
+        <h5>Product</h5>
+        <ul><li><a href="#product">Deck review</a></li><li><a href="#product">Model review</a></li><li><a href="#product">Reconciliation</a></li><li><a href="#demo">Live review</a></li></ul>
+      </div>
+      <div>
+        <h5>Firm</h5>
+        <ul><li><a href="#how">How it works</a></li><li><a href="#security">Security</a></li><li><a href="#access">Request access</a></li></ul>
+      </div>
+    </div>
+    <div class="base">
+      <span>© 2026 Redline</span>
+      <span>Local-first · Originals never modified · Human-in-the-loop</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+const SEV={high:'hi',med:'md',low:'lo'};
+const CATLABEL={typo:'Typo',format:'Format',data:'Data',t1:'Storyline',layout:'Layout'};
+let DATA=null, curSlide=null, curFilter='all';
+
+fetch('assets/demo.json').then(r=>r.json()).then(d=>{DATA=d;initDemo();}).catch(()=>{
+  document.getElementById('demoapp').innerHTML='<div style="padding:40px;color:#8FA0A7;font-family:IBM Plex Mono">Demo data unavailable.</div>';
+});
+
+function initDemo(){
+  const c=DATA.meta.counts;
+  document.getElementById('deckname').textContent=DATA.meta.deck.replace(' (sample)','');
+  document.getElementById('counts').innerHTML=
+    `<span style="color:#E8907F">${c.high} high</span> · ${c.med} med · ${c.low} low`;
+  // slides that have findings
+  const bySlide={};
+  DATA.findings.forEach(f=>{(bySlide[f.slide]=bySlide[f.slide]||[]).push(f);});
+  const slides=Object.keys(bySlide).map(Number).sort((a,b)=>a-b);
+  const rail=document.getElementById('rail');
+  slides.forEach(n=>{
+    const fs=bySlide[n];
+    const maxsev=fs.some(f=>f.severity==='high')?'hi':fs.some(f=>f.severity==='med')?'md':'lo';
+    const t=document.createElement('div');t.className='thumb';t.dataset.slide=n;
+    t.innerHTML=`<img src="assets/slides/s${String(n).padStart(3,'0')}.png" alt="Slide ${n}" loading="lazy">
+      <span class="badge ${maxsev}">${fs.length}</span><span class="snum">${n}</span>`;
+    t.onclick=()=>selectSlide(n);
+    rail.appendChild(t);
+  });
+  // filters
+  const cats=['all',...Array.from(new Set(DATA.findings.map(f=>f.category)))];
+  const fl=document.getElementById('filters');
+  cats.forEach(cat=>{
+    const b=document.createElement('button');b.className='chip'+(cat==='all'?' on':'');
+    b.textContent=cat==='all'?'All':CATLABEL[cat]||cat;b.dataset.cat=cat;
+    b.onclick=()=>{curFilter=cat;[...fl.children].forEach(x=>x.classList.toggle('on',x.dataset.cat===cat));renderCards();};
+    fl.appendChild(b);
+  });
+  // default slide = most findings
+  slides.sort((a,b)=>bySlide[b].length-bySlide[a].length);
+  selectSlide(slides[0]);
+}
+
+function selectSlide(n){
+  curSlide=n;
+  document.querySelectorAll('.thumb').forEach(t=>t.classList.toggle('active',+t.dataset.slide===n));
+  const img=document.getElementById('slideImgEl');
+  img.src=`assets/slides/s${String(n).padStart(3,'0')}.png`;
+  const title=(DATA.slideTitles&&DATA.slideTitles[n])||'';
+  document.getElementById('stitle').innerHTML=`Slide ${n} &nbsp;·&nbsp; <b>${escapeHtml(title||'—')}</b>`;
+  renderCards();
+}
+
+function renderCards(){
+  const box=document.getElementById('cards');box.innerHTML='';
+  let fs=DATA.findings.filter(f=>f.slide===curSlide);
+  if(curFilter!=='all')fs=fs.filter(f=>f.category===curFilter);
+  if(!fs.length){box.innerHTML='<div style="color:#8FA0A7;font-family:IBM Plex Mono;font-size:13px;padding:8px 0">No findings in this filter on this slide.</div>';return;}
+  const order={high:0,med:1,low:2};fs.sort((a,b)=>order[a.severity]-order[b.severity]);
+  fs.forEach(f=>{
+    const sv=SEV[f.severity];
+    const src=f.verdict==='confirmed'?'AI ✓':(f.source==='DET'?'Rule':'AI');
+    const card=document.createElement('div');card.className='fcard '+sv;
+    card.innerHTML=`
+      <div class="top">
+        <span class="tag cat">${CATLABEL[f.category]||f.category}</span>
+        <span class="tag sev-${sv}">${f.severity}</span>
+        <span class="tag src">${src}</span>
+        <span class="tag act">${f.action==='fix'?'Fix':'Flag'}</span>
+      </div>
+      <div class="issue">${escapeHtml(f.issue)}</div>
+      <div class="quote">${escapeHtml(f.quote)}</div>
+      ${f.fix?`<div class="fix"><b>Suggested</b> &nbsp;${escapeHtml(f.fix)}</div>`:''}
+      ${f.note?`<div class="vnote">Verifier: ${escapeHtml(f.note)}</div>`:''}`;
+    box.appendChild(card);
+  });
+}
+
+function escapeHtml(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+// access form -> mailto
+document.getElementById('accessForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  const g=id=>encodeURIComponent(document.getElementById(id).value);
+  const body=`Name: ${g('name')}%0D%0AFirm: ${g('firm')}%0D%0AEmail: ${g('email')}%0D%0ARole: ${g('role')}%0D%0A%0D%0AWe'd like a Redline review on a live deck.`;
+  window.location.href=`mailto:hello@redline.review?subject=${encodeURIComponent('Redline — request access')}&body=${body}`;
+});
+
+// reveal on scroll
+const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.12});
+document.querySelectorAll('section .sechead, .markup, .pillar, .step, .stat, .secitem, .taxcol, .access .card').forEach((el,i)=>{el.classList.add('reveal');el.style.transitionDelay=(i%4*60)+'ms';io.observe(el);});
+</script>
+</body>
+</html>

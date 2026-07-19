@@ -1,0 +1,415 @@
+{
+ "meta": {
+  "deck": "Project Tower — Commercial due diligence (sample)",
+  "slides": 15,
+  "counts": {
+   "high": 18,
+   "med": 23,
+   "low": 6,
+   "fix": 21,
+   "flag": 26
+  }
+ },
+ "slideTitles": {
+  "1": "Project Tower - Commercial due diligence",
+  "2": "Our review spans four independent workstreams",
+  "3": "Market dynamics support the investment case",
+  "4": "Market dynamics support the investment case",
+  "5": "Regulatory overview",
+  "6": "Nyxos's entry reshaped the tower market",
+  "7": "Torreo operates the largest independent tower portfolio",
+  "8": "Revenue growth is underpinned by rising tenancy",
+  "9": "Key operating metrics are summarised below. OFCF conversion has improved steadily since 2021. Churn remains negligible given contractual lock-ins. Sites under management continue to expand through build-to-suit.",
+  "10": "Valuation reflects premium infrastructure characteristics",
+  "11": "Cost synergies expand margins by 2028",
+  "12": "Key risks are mitigable but warrant monitoring",
+  "13": "xxx",
+  "14": "WIP",
+  "15": "Appendix and supporting detail"
+ },
+ "findings": [
+  {
+   "id": "F001",
+   "slide": 1,
+   "category": "typo",
+   "severity": "high",
+   "issue": "Wrong-language/nonsense fragment mixes Northland and English into a term that does not exist in either language.",
+   "quote": "documento di offertory",
+   "fix": "Confirm the correct name of the reference document (e.g. 'offering memorandum' or 'documento di offerta') with the deal team and replace.",
+   "action": "flag",
+   "source": "AI",
+   "verdict": "confirmed",
+   "note": "\"documento di offertory\" appears verbatim on the cover; it fuses Northland \"documento di\" with the mangled \"offertory\" and names no real document type — on a client cover slide this needs the deal team to supply the correct term (documento di offerta / offering memorandum), so flag is right."
+  },
+  {
+   "id": "F005",
+   "slide": 3,
+   "category": "data",
+   "severity": "high",
+   "issue": "Source is cited as REGX, but the Northland telecoms regulator's canonical name per house convention is NRAI.",
+   "quote": "REGX",
+   "fix": "NRAI",
+   "action": "flag",
+   "source": "AI",
+   "verdict": "confirmed",
+   "note": "REGX is the French regulator; the Northland telecoms regulator is NRAI, so the source citation is wrong for an Northland tower-market slide."
+  },
+  {
+   "id": "F012",
+   "slide": 4,
+   "category": "t1",
+   "severity": "high",
+   "issue": "Duplicate action title (same as slide 3)",
+   "quote": "Market dynamics support the investment case",
+   "fix": "Give this slide a distinct action title reflecting its specific content (tenancy ratios, CAGR growth, colocation demand).",
+   "action": "flag",
+   "source": "DET",
+   "verdict": "confirmed",
+   "note": "Verified slide 3 title reads identically 'Market dynamics support the investment case'; consecutive duplicate action title is a real storyline defect needing an owner rewrite."
+  },
+  {
+   "id": "F020",
+   "slide": 6,
+   "category": "typo",
+   "severity": "high",
+   "issue": "Company name misspelled as 'Nyxxos' in the body text, inconsistent with the correct spelling 'Nyxos' used in the slide's own title.",
+   "quote": "Nyxxos launched in 2018 with disruptive, low-cost pricing.",
+   "fix": "Nyxos launched in 2018 with disruptive, low-cost pricing.",
+   "action": "fix",
+   "source": "AI",
+   "verdict": "confirmed",
+   "note": "Body 'Nyxxos' (double-L) misspells the company name and contradicts the correctly-spelled 'Nyxos' in the slide's own title; mechanical single-answer fix."
+  },
+  {
+   "id": "F023",
+   "slide": 7,
+   "category": "data",
+   "severity": "high",
+   "issue": "Site count is internally impossible: S3 states the whole Northland tower market is 2.029 (2,029) macro sites, yet S7 states Torreo's portfolio alone is 17.594 (17,594) macro sites — one operator's portfolio exceeds the stated three-operator market total, so the part is larger than the whole.",
+   "quote": "The portfolio comprises 17.594 macro sites nationwide.",
+   "fix": "Owner to reconcile the two site counts — the single-operator portfolio cannot exceed the market total — or correct whichever figure is misstated.",
+   "action": "flag",
+   "source": "AI",
+   "verdict": "confirmed",
+   "note": "S3 states the whole three-operator Northland tower market is ~2,029 macro sites while S7 states Torreo alone holds ~17,594; under any separator reading the single-operator part exceeds the market whole — a genuine cross-slide impossibility that only the owner can reconcile, so flag not fix."
+  },
+  {
+   "id": "F030",
+   "slide": 9,
+   "category": "t1",
+   "severity": "high",
+   "issue": "The slide's title bar is completely empty, unlike the surrounding slides which carry a stated headline.",
+   "quote": "[empty navy title bar, no title text]",
+   "fix": "Add a headline title consistent with the storyline (e.g. summarising the operating-metrics takeaway) before this ships.",
+   "action": "flag",
+   "source": "AI",
+   "verdict": "confirmed",
+   "note": "Image confirms the navy title bar is entirely blank on a body/metrics slide; a missing headline would embarrass in a client-facing FTI deck and needs the owner to author an action title."
+  },
+  {
+   "id": "F035",
+   "slide": 10,
+   "category": "data",
+   "severity": "high",
+   "issue": "Gross profit figure is nonsensical (\"700 hundred million\" is not a valid number) and stated in pounds while every other figure on the slide is in euros.",
+   "quote": "The asset generated 700 hundred million pounds of gross profit last year.",
+   "fix": "Confirm the correct gross profit figure and currency (likely €m, consistent with the €1.5bn revenue figure above) and restate clearly, e.g. \"€Xm of gross profit\".",
+   "action": "flag",
+   "source": "AI",
+   "verdict": "confirmed",
+   "note": "Quote appears verbatim; '700 hundred million' is a malformed number and 'pounds' contradicts the euro units used elsewhere on the slide — real, needs owner to confirm figure and currency."
+  },
+  {
+   "id": "F037",
+   "slide": 11,
+   "category": "data",
+   "severity": "high",
+   "issue": "The three savings percentages given (procurement/energy/overhead) sum to 110%, not 100%.",
+   "quote": "The split across procurement, energy and overhead is 45% / 35% / 30% of total identified savings.",
+   "fix": "Owner to reconcile the split so the three shares sum to 100%, or clarify that the shares are not mutually exclusive components of the total.",
+   "action": "flag",
+   "source": "AI",
+   "verdict": "confirmed",
+   "note": "45 + 35 + 30 = 110%, so the stated split of a single total cannot tie to 100% — a real reconciliation error the owner must resolve."
+  },
+  {
+   "id": "F038",
+   "slide": 11,
+   "category": "data",
+   "severity": "high",
+   "issue": "The text claims energy efficiency is the largest single opportunity, but the stated split shows procurement (45%) exceeds energy (35%).",
+   "quote": "Energy efficiency offers the largest single opportunity.",
+   "fix": "Reconcile with the split above — correct either the largest-lever claim (to procurement) or the percentage split.",
+   "action": "flag",
+   "source": "AI",
+   "verdict": "confirmed",
+   "note": "The split lists procurement/energy/overhead as 45/35/30, so procurement (45%) is largest, directly contradicting the claim that energy efficiency is the largest single opportunity."
+  },
+  {
+   "id": "F039",
+   "slide": 12,
+   "category": "data",
+   "severity": "high",
+   "issue": "Placeholder text left in client-facing slide: 'xxx'",
+   "quote": "Regulatory risk is currently rated xxx pending legal confirmation.",
+   "fix": "Owner to insert the confirmed regulatory risk rating once legal sign-off is received.",
+   "action": "flag",
+   "source": "DET",
+   "verdict": "confirmed",
+   "note": "'rated xxx pending legal confirmation' is an unmistakable placeholder; inserting the real rating needs the owner's legally-confirmed input, so flag is correct."
+  },
+  {
+   "id": "F040",
+   "slide": 12,
+   "category": "layout",
+   "severity": "high",
+   "issue": "An internal reviewer note/TODO box has been left on the slide and would ship to the client.",
+   "quote": "TODO: check with Marco before sending",
+   "fix": "Delete the TODO note box before sending.",
+   "action": "flag",
+   "source": "AI",
+   "verdict": "confirmed",
+   "note": "The yellow 'TODO: check with Marco before sending' box (shape 7) is plainly visible in both text and image; it is an internal note that must not ship to a client."
+  },
+  {
+   "id": "F041",
+   "slide": 13,
+   "category": "data",
+   "severity": "high",
+   "issue": "Placeholder text left in client-facing slide: 'xxx'",
+   "quote": "xxx",
+   "fix": "Replace placeholder with final content",
+   "action": "flag",
+   "source": "DET",
+   "verdict": null,
+   "note": ""
+  },
+  {
+   "id": "F042",
+   "slide": 13,
+   "category": "data",
+   "severity": "high",
+   "issue": "Placeholder text left in client-facing slide: '202X'",
+   "quote": "Source: Company filings (202X); FTI Consulting analysis",
+   "fix": "Replace placeholder with final content",
+   "action": "flag",
+   "source": "DET",
+   "verdict": null,
+   "note": ""
+  },
+  {
+   "id": "F043",
+   "slide": 13,
+   "category": "t1",
+   "severity": "high",
+   "issue": "Slide title is a placeholder ('xxx') rather than an actual action title.",
+   "quote": "xxx",
+   "fix": "Owner needs to write a descriptive action title summarising the sources slide before this ships.",
+   "action": "flag",
+   "source": "AI",
+   "verdict": "confirmed",
+   "note": "Title reads 'xxx' in both extracted text [shape 3] and the rendered image — an unresolved placeholder title that cannot ship."
+  },
+  {
+   "id": "F044",
+   "slide": 13,
+   "category": "data",
+   "severity": "high",
+   "issue": "Source line contains an unresolved placeholder year ('202X') instead of the actual filing year.",
+   "quote": "202X",
+   "fix": "Owner needs to replace '202X' with the correct filing year.",
+   "action": "flag",
+   "source": "AI",
+   "verdict": "confirmed",
+   "note": "Source footer literally reads 'Company filings (202X)' in text and image — placeholder year, needs the owner's actual filing year, so flag not fix."
+  },
+  {
+   "id": "F045",
+   "slide": 14,
+   "category": "layout",
+   "severity": "high",
+   "issue": "Draft tag 'WIP' in client-facing slide",
+   "quote": "WIP",
+   "fix": "Confirm slide is finalised and remove the WIP badge before this deck is circulated to the client.",
+   "action": "flag",
+   "source": "DET",
+   "verdict": "confirmed",
+   "note": "The red 'WIP' badge (shape 7) is visible in the image and text; a draft-tag on a client-facing slide is a genuine ship-blocker to flag."
+  },
+  {
+   "id": "F046",
+   "slide": 14,
+   "category": "layout",
+   "severity": "high",
+   "issue": "Shape extends off-slide (100% outside canvas) — likely leftover review note",
+   "quote": "Need to double-check tenancy figures with client",
+   "fix": "Remove the internal note before circulation; owner must first confirm the tenancy figures have been reconciled with the client, then delete the annotation.",
+   "action": "flag",
+   "source": "DET",
+   "verdict": "confirmed",
+   "note": "The internal note (shape 8) is real and must not reach the client, but it flags an unresolved data check (tenancy figures) needing the owner's decision, so it is flag not a silent mechanical delete."
+  },
+  {
+   "id": "F048",
+   "slide": 15,
+   "category": "layout",
+   "severity": "high",
+   "issue": "Unfilled template placeholder box reading \"Insert client logo here\" is left on the slide as if client-facing.",
+   "quote": "Insert client logo here",
+   "fix": "Insert the actual client logo (or remove the placeholder box) before this deck ships.",
+   "action": "flag",
+   "source": "AI",
+   "verdict": "confirmed",
+   "note": "Image confirms an unfilled 'Insert client logo here' placeholder box on a client-facing slide; inserting the real logo is an owner asset action, so flag."
+  }
+ ],
+ "t1": [
+  {
+   "slide": 1,
+   "title": "Project Tower - Commercial due diligence",
+   "strength": "Topic label",
+   "comment": "Project cover slide naming the engagement.",
+   "rewrite": ""
+  },
+  {
+   "slide": 2,
+   "title": "Our review spans four independent workstreams",
+   "strength": "OK",
+   "comment": "Legitimate scope slide, but states structure rather than a finding.",
+   "rewrite": ""
+  },
+  {
+   "slide": 3,
+   "title": "Market dynamics support the investment case",
+   "strength": "Weak",
+   "comment": "Generic and unquantified; 'support the investment case' could sit on almost any market slide.",
+   "rewrite": "Rising tenancy demand lifts the Northland tower market by [X]% CAGR."
+  },
+  {
+   "slide": 4,
+   "title": "Market dynamics support the investment case",
+   "strength": "Duplicate",
+   "comment": "Word-for-word identical to S3 on the adjacent slide.",
+   "rewrite": "State a distinct market driver so slide 4 differs from slide 3 [specify]."
+  },
+  {
+   "slide": 5,
+   "title": "Regulatory overview",
+   "strength": "Topic label",
+   "comment": "Names the topic on a content slide (not a divider); carries no takeaway.",
+   "rewrite": "Regulation adds [X]% tailwind to tower revenue by [year]."
+  },
+  {
+   "slide": 6,
+   "title": "Nyxos's entry reshaped the tower market",
+   "strength": "OK",
+   "comment": "Specific and slide-unique, but 'reshaped' leaves magnitude and direction unquantified.",
+   "rewrite": ""
+  },
+  {
+   "slide": 7,
+   "title": "Torreo operates the largest independent tower portfolio",
+   "strength": "OK",
+   "comment": "Establishes leadership, but reads as a positioning fact rather than an investment so-what.",
+   "rewrite": ""
+  },
+  {
+   "slide": 8,
+   "title": "Revenue growth is underpinned by rising tenancy",
+   "strength": "OK",
+   "comment": "Names the driver of growth, but the tenancy uplift is unquantified.",
+   "rewrite": ""
+  },
+  {
+   "slide": 9,
+   "title": "Key operating metrics are summarised below. OFCF conversion has improved steadily since 2021. Churn remains negligible given contractual lock-ins. Sites under management continue to expand through build-to-suit.",
+   "strength": "Weak",
+   "comment": "A four-sentence paragraph led by 'summarised below'; overloaded and no single takeaway.",
+   "rewrite": "OFCF conversion has improved steadily since 2021 on negligible churn."
+  },
+  {
+   "slide": 10,
+   "title": "Valuation reflects premium infrastructure characteristics",
+   "strength": "OK",
+   "comment": "Directional takeaway, but 'premium infrastructure characteristics' is soft and would land harder with a multiple.",
+   "rewrite": ""
+  },
+  {
+   "slide": 11,
+   "title": "Cost synergies expand margins by 2028",
+   "strength": "Strong",
+   "comment": "Driver, effect and horizon in one line; could not sit on another slide.",
+   "rewrite": ""
+  },
+  {
+   "slide": 12,
+   "title": "Key risks are mitigable but warrant monitoring",
+   "strength": "OK",
+   "comment": "Hedged and generic; 'mitigable but warrant monitoring' could headline any risk slide.",
+   "rewrite": ""
+  },
+  {
+   "slide": 13,
+   "title": "xxx",
+   "strength": "Placeholder",
+   "comment": "'xxx' is a stub left where the takeaway should be.",
+   "rewrite": "[State the slide's takeaway, likely the deal recommendation]."
+  },
+  {
+   "slide": 14,
+   "title": "WIP",
+   "strength": "Placeholder",
+   "comment": "'WIP' marks an unfinished slide with no argument.",
+   "rewrite": "[Finish the analysis and state its single takeaway]."
+  },
+  {
+   "slide": 15,
+   "title": "Appendix and supporting detail",
+   "strength": "Topic label",
+   "comment": "Appendix divider — fine.",
+   "rewrite": ""
+  }
+ ],
+ "consistency": [
+  {
+   "item": "CAGR notation",
+   "variants": "apos|hyphen|2/2 (S3); noapos|hyphen|4/4 (S4)",
+   "rec": "One style everywhere (house: CAGR '26-'34)"
+  },
+  {
+   "item": "Company name casing (Torreo)",
+   "variants": "'Torreo' standard (S7 title; S7/S8/S9 source lines) vs 'Torreo' S7 body ('Torreo was formed in 2015')",
+   "rec": "Torreo everywhere (house canonical)"
+  },
+  {
+   "item": "Company name spelling (Nyxos)",
+   "variants": "'Nyxos' S6 title ('Nyxos's entry') vs 'Nyxxos' S6 body ('Nyxxos launched in 2018')",
+   "rec": "Nyxos — one spelling"
+  },
+  {
+   "item": "Thousands separator",
+   "variants": "'.' used as thousands separator, Northland style: 2.029 macro sites (S3), 17.594 macro sites (S7)",
+   "rec": "en-UK comma: 2,029; 17,594"
+  },
+  {
+   "item": "Decimal separator",
+   "variants": "',' as decimal in 11,6% (S4) vs '.' in 1.8x (S4), 2.1x (S7), €2.02bn (S7), €1.5bn (S10)",
+   "rec": "Decimal point throughout: 11.6%"
+  },
+  {
+   "item": "CAGR notation",
+   "variants": "CAGR '26-'30 (S3) vs CAGR2026-2030 (S4)",
+   "rec": "CAGR '26-'30 (house CAGR '26-'34 style: apostrophe, 2-digit years, hyphen, spaced from 'CAGR')"
+  },
+  {
+   "item": "Currency symbol spacing",
+   "variants": "€2.02bn (S7), €1.5bn (S10) no space vs '€ 34k' (S8) with space",
+   "rec": "No space: €34k"
+  },
+  {
+   "item": "Currency unit",
+   "variants": "€ throughout (S7 €2.02bn; S8 €34k; S10 €1.5bn) vs 'pounds' (S10 '700 hundred million pounds of gross profit')",
+   "rec": "Single currency (€); also fix malformed magnitude '700 hundred million'"
+  }
+ ]
+}
