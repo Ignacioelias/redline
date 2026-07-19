@@ -599,7 +599,7 @@ document.getElementById('accessForm').addEventListener('submit',function(e){
   e.preventDefault();
   const g=id=>encodeURIComponent(document.getElementById(id).value);
   const body=`Name: ${g('name')}%0D%0AFirm: ${g('firm')}%0D%0AEmail: ${g('email')}%0D%0ARole: ${g('role')}%0D%0A%0D%0AWe'd like a Redline review on a live deck.`;
-  window.location.href=`mailto:hello@redline.review?subject=${encodeURIComponent('Redline — request access')}&body=${body}`;
+  window.location.href=`mailto:hellotobyn@gmail.com?subject=${encodeURIComponent('Redline — request access')}&body=${body}`;
 });
 
 // reveal on scroll
